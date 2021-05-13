@@ -1,2 +1,5 @@
 /my_env/
 test*
+*.out
+__pycache__/
+.vscode/
