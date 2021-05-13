@@ -1,11 +1,5 @@
+# Q2
 from score_checker import calculate_score
-
-
-def sorted_str(str):
-    char_list = list(str)
-    char_list.sort()
-    sorted_str = "".join(char_list)
-    return sorted_str
 
 def make_alp_list(str):
     alp_list = [0] * 26
@@ -13,14 +7,6 @@ def make_alp_list(str):
         ascii = ord(c) - ord("a")
         alp_list[ascii] += 1
     return alp_list
-
-
-def sort_words(words):
-    sorted_words = []
-    for word in words:
-        sorted_words.append((sorted_str(word), word))
-    sorted_words.sort(key=lambda x: x[0])
-    return sorted_words
 
 def make_alp_dict(words):
     alp_dict = []
