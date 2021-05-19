@@ -1,10 +1,12 @@
 # 宿題3：ブラウザキャッシュの物理設計を考える
 ## スライド
-以下のスライドで図にまとめました
+以下のスライドで図にまとめました <br>
 https://docs.google.com/presentation/d/12F1VA33eQ_CLXukJiGg_En67ogBBtZhDCRu30A2ODfM/edit?usp=sharing
 
 ## データ構造
 ハッシュテーブルによって各データを保持し、閲覧順序の関係はポインタを張って双方向リストで管理する。
+![image](https://user-images.githubusercontent.com/58587065/118757202-98f25680-b8a7-11eb-8e66-7af75517ddd6.png)
+
 
 ## 追加するとき
 ### キャッシュにない場合
