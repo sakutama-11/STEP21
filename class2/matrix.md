@@ -1,12 +1,14 @@
 # 宿題1：行列積を求めるプログラムの実行時間を調べる
 ## 方針
 ### Python
+https://github.com/sakutama-11/STEP21/tree/master/class2/matrix_py
 1. N×Nの行列を用意する。
 2. 行列積を計算(calc_matrix_production())。実行時間を計測する。
 3. 0からnまで繰り返し、各大きさの行列の行列積の計算時間をリストtime_listに格納。
 4. matplotlibでグラフ化する。計算量がO(N)となることを予想し、得られた実行時間とNの関係を3次近似したグラフを赤で比較のため表示。
 
 ### C言語
+https://github.com/sakutama-11/STEP21/tree/master/class2/matrix_c
 matrix.cで行列積を計算し、0からNまでの大きさの行列積の計算時間をtime.txtに出力。テキストファイルから配列を読み込み、time_graph.pyでグラフ化した。
 1. N×Nの行列を用意する。
 2. 行列積を計算(calc_prod())。実行時間を計測する。
