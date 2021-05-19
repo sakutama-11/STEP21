@@ -1,7 +1,7 @@
 # Q2
 from score_checker import calculate_score
-
 def make_alp_list(str):
+    # make list that the number of times each alphabet is used in str.
     alp_list = [0] * 26
     for c in str:
         ascii = ord(c) - ord("a")
@@ -9,6 +9,7 @@ def make_alp_list(str):
     return alp_list
 
 def make_alp_dict(words):
+    # Returns: alp_dict [list] [([a=0, b=2, ...], word), ([], str), ([], str), ...]
     alp_dict = []
     for word in words:
         alp_dict.append((make_alp_list(word), word))
@@ -16,26 +17,26 @@ def make_alp_dict(words):
 
 def search_anagram(word, alp_dict):
     target = make_alp_list(word)
-    anagram = ""
-    max_score = 0
     for alp_word in alp_dict:
-        flg = 0
-        for c in alp_word[1]:
+        enough_chars = True
+        alp_list = alp_word[0]
+        word = alp_word[1]
+        for c in word:
             ascii = ord(c) - ord("a")
-            if target[ascii] < alp_word[0][ascii]:
-                flg = 1
+            if target[ascii] < alp_list[ascii]:
+                enough_chars = False
                 break
-        if flg == 0 and calculate_score(alp_word[1]) > max_score:
-            max_score = calculate_score(alp_word[1])
-            anagram = alp_word[1]
-    return anagram
+        if enough_chars == True:
+            return word
+    return ""
 
 def main():
     f = open("words.txt", "r")
     dictionary = f.read().splitlines()
     f.close()
-    alp_dictionary = make_alp_dict(dictionary)
-    for file in ["small", "medium", "large"]:
+    sorted_dictionary = sorted(dictionary, key=calculate_score, reverse=True)
+    alp_dictionary = make_alp_dict(sorted_dictionary)
+    for file in ["small", "medium","large"]:
         i = open(file + ".txt", "r")
         inputs = i.read().splitlines()
         i.close()
@@ -43,7 +44,6 @@ def main():
         for input in inputs:
             anagram = search_anagram(input, alp_dictionary)
             print(anagram, file=o)
-        
 
 if __name__ == "__main__":
     main()
