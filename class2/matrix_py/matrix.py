@@ -58,7 +58,7 @@ def main():
     
     x = numpy.array(n_list)
     y = numpy.array(time_list)
-    filename = "time_py_"+ str(n) + ".png"
+    filename = "time_py_" + str(n) + ".png"
     save_graph(x, y, filename)
 
 if __name__ == "__main__":

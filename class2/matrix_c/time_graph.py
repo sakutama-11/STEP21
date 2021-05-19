@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 def save_graph(x, y, filename):
     res = np.polyfit(x, y, 3)
-    y_model = res[0]*0.73 * x ** 3
+    y_model = res[0] * 0.73 * x ** 3
     plt.xlabel("N")
     plt.ylabel("time[s]")
     plt.yticks(np.arange(0, 4, 0.01))
