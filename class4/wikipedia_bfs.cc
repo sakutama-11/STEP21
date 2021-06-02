@@ -115,11 +115,11 @@ int main() {
   int start_id, dist_id;
   get_id_of_page(start, dist, pages, start_id, dist_id);
 
-  map<int, int> distances;
-  bool found = path_search_by_bfs(start_id, dist_id, links, distances);
+  map<int, int> prev_nodes;
+  bool found = path_search_by_bfs(start_id, dist_id, links, prev_nodes);
 
   if (found) {
-    int distance = print_path(distances, pages, dist_id);
+    int distance = print_path(prev_nodes, pages, dist_id);
     cout << endl;
     cout << "The distance from " << start << " to " << dist << " is " << distance << "." << endl;
   }
