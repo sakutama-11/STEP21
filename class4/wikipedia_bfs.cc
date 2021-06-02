@@ -8,25 +8,28 @@
 
 using namespace std;
 
-void read_pages(string filename, map<string, string> &pages){
+void read_pages(string filename, map<int, string> &pages){
   ifstream file(filename);
   string data;
   while (getline(file, data)) {
     auto index = data.find('\t');
     auto id = data.substr(0, index);
+    int i = stoi(id);
     auto title = data.substr(index + 1, data.size() - id.size() - 1);
-    pages[id] = title;
+    pages[i] = title;
   }
 }
 
-void read_links(string filename, map<string, set<string>> &links){
+void read_links(string filename, map<int, set<int>> &links){
   ifstream file(filename);
   string data;
   while (getline(file, data)) {
     auto index = data.find('\t');
     auto from = data.substr(0, index);
+    int f = stoi(from);
     auto to = data.substr(index + 1, data.size() - from.size() - 1);
-    links[from].insert(to);
+    int t = stoi(to);
+    links[f].insert(t);
   }
 }
 
@@ -39,7 +42,7 @@ void read_links(string filename, map<string, set<string>> &links){
  @param[out] dist_id 終点ノードid
 */
 
-void get_id_of_page(string start, string dist, map<string, string> pages, string &start_id, string &dist_id) {
+void get_id_of_page(string start, string dist, map<int, string> pages, int &start_id, int &dist_id) {
   bool s_found = false, d_found = false;
   for (const auto& page : pages) {
     if (page.second == start) {
@@ -58,73 +61,70 @@ void get_id_of_page(string start, string dist, map<string, string> pages, string
  @param[in] start 始点ノードid
  @param[in] dist 終点ノードid
  @param[in] links <ノードid, 接続先ノードidの集合>のマップ
- @param[out] distances <ノードid, <始点からの距離, 一つ前のノードid>>のマップ
- @return startからdistまでの最短距離
+ @param[out] prev_nodes <ノードid,  一つ前のノードid>のマップ
+ @return distにたどり着けばtrue, たどり着かなければfalse
 */
 
-int path_search_by_bfs(string start, string dist, map<string, set<string>> links, map<string, pair<int, string>> &distances) {
-  // map<page_id, <distance, prev_node>>
-  queue<string> q;
+bool path_search_by_bfs(int start, int dist, map<int, set<int>> links, map<int, int> &prev_nodes) {
+  queue<int> q;
   q.push(start);
-  distances[start] = make_pair(0, "-1");
+  prev_nodes[start] = -1;
   if (start == dist) return 0;
   while (!q.empty()) {
-    string node = q.front();
+    int node = q.front();
     q.pop();
-    int d = distances[node].first;
     for (const auto& child : links[node]) {
-      if (distances.find(child) == end(distances)) { // not visited
-        distances[child] = make_pair(d + 1, node);
+      if (prev_nodes.find(child) == end(prev_nodes)) { // not visited
+        prev_nodes[child] = node;
         q.push(child);
-        if (child == dist) return distances[child].first;
+        if (child == dist) return true;
       }
     }
   }
-  return -1;
+  return false;
 }
 
 
-/*! @brief startからendまでの最短経路を標準出力する再帰関数
- @param[in] distances <ノードid, <始点からの距離, 一つ前のノードid>>のマップ
+/*! @brief startからnodeまでの最短経路を標準出力する再帰関数
+ @param[in] prev_nodes <ノードid, 一つ前のノードid>のマップ
  @param[in] pages <ノードid, <始点からの距離, 一つ前のノードid>>のマップ
- @param[in] node printするノードid
+ @param[in] node printする終点ノードid
+ @return startからnodeまでの距離
 */
 
-void print_path(map<string, pair<int, string>> distances, map<string, string> pages, string node) {
-  string prev = distances[node].second;
-  if (prev == "-1") {
+int print_path(map<int, int> prev_nodes, map<int, string> pages, int node) {
+  int prev = prev_nodes[node];
+  if (prev == -1) {
     cout << pages[node];
-    return;
+    return 0;
   }
-  print_path(distances, pages, prev);
+  int d = print_path(prev_nodes, pages, prev);
   cout << " -> " << pages[node];
+  return ++d;
 }
 
 int main() {
-  map<string, string> pages;
-  map<string, set<string>> links;
+  map<int, string> pages;
+  map<int, set<int>> links;
 
   read_pages("data/pages.txt", pages);
-  cout << "pages readed" << endl;
   read_links("data/links.txt", links);
-  cout << "links readed" << endl;
+
   string start = "Google";
   string dist = "渋谷";
-  string start_id, dist_id;
+  int start_id, dist_id;
   get_id_of_page(start, dist, pages, start_id, dist_id);
-  cout << "got page_id" << endl;
 
-  map<string, pair<int, string>> distances;
-  int distance = path_search_by_bfs(start_id, dist_id, links, distances);
+  map<int, int> distances;
+  bool found = path_search_by_bfs(start_id, dist_id, links, distances);
 
-  if (distance >= 0) {
+  if (found) {
+    int distance = print_path(distances, pages, dist_id);
+    cout << endl;
     cout << "The distance from " << start << " to " << dist << " is " << distance << "." << endl;
   }
   else {
     cout << start << " to " << dist << " is not connected." << endl;
   }
-
-  print_path(distances, pages, dist_id);
-  cout << endl;
   return 0;
 }
