@@ -47,13 +47,16 @@ void get_id_of_page(string start, string dist, map<int, string> pages, int &star
   for (const auto& page : pages) {
     if (page.second == start) {
       start_id = page.first;
-
+      // s_found = true が無い気がします！！
     } 
+    // else if にするとstart == distだった時困りそうなのでif でいいと思います!
     else if (page.second == dist) {
       dist_id = page.first;
+      // d_found = true が無い気がします！！
     }
     if (s_found && d_found) return;
   }
+  // start_id, dist_idが見つからなかったときの例外処理も書いた方がいいかもしれないです。
 }
 
 
@@ -69,11 +72,13 @@ bool path_search_by_bfs(int start, int dist, map<int, set<int>> links, map<int, 
   queue<int> q;
   q.push(start);
   prev_nodes[start] = -1;
+  // ここってreturn trueじゃないでしょうか...？main関数の中ならreturn 0をすると正常終了ですが，この関数の中で0を返すとfalseとして返ってしまうと思います！
   if (start == dist) return 0;
   while (!q.empty()) {
     int node = q.front();
     q.pop();
     for (const auto& child : links[node]) {
+      // findを使うとprev_nodesの長さだけ時間がかかってしまうと思うので，ここはO(1)で判断できた方がいいと思います。prev_nodesをvectorにして，訪れていなければ-1，訪れたら一つ前のノードidを保存しておけば訪れたかどうかO(1)で判断できます。
       if (prev_nodes.find(child) == end(prev_nodes)) { // not visited
         prev_nodes[child] = node;
         q.push(child);
