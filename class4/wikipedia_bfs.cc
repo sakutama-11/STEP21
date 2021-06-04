@@ -47,13 +47,20 @@ void get_id_of_page(string start, string dist, map<int, string> pages, int &star
   for (const auto& page : pages) {
     if (page.second == start) {
       start_id = page.first;
-
+      s_found = true;
     } 
-    else if (page.second == dist) {
+    if (page.second == dist) {
       dist_id = page.first;
+      d_found = true;
     }
     if (s_found && d_found) return;
   }
+  if (!s_found) {
+    cout << start << " is not included in this graph." << endl;
+  } else {
+    cout << dist << " is not included in this graph." << endl;
+  }
+  exit(1);
 }
 
 
@@ -69,7 +76,7 @@ bool path_search_by_bfs(int start, int dist, map<int, set<int>> links, map<int, 
   queue<int> q;
   q.push(start);
   prev_nodes[start] = -1;
-  if (start == dist) return 0;
+  if (start == dist) return true;
   while (!q.empty()) {
     int node = q.front();
     q.pop();
